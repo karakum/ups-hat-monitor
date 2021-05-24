@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# Startup script for upshatmonitor
+#
+# chkconfig: 2345 65 38
+# description: Monitor of UPS HAT For Raspberry Pi
+# processname: ups-hat-monitor
+# pidfile: /var/run/ups-hat-monitor.pid
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# See how we were called.
+case "$1" in
+  start)
+        echo -n "Starting UPS HAT Monitor: "
+        daemon /usr/bin/ups-hat-monitor --pidfile /var/run/ups-hat-monitor.pid
+        RETVAL=$?
+        echo
+        ;;
+  stop)
+        echo -n "Stopping UPS HAT Monitor: "
+        killproc ups-hat-monitor
+        rm -f /var/run/ups-hat-monitor.pid
+        RETVAL=$?
+        echo
+        ;;
+  status)
+        status /usr/bin/ups-hat-monitor
+        RETVAL=$?
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        RETVAL=$?
+        ;;
+  reload)
+  		echo -n "Reloading UPS HAT Monitor: "
+        killproc upshatmonitor -HUP
+        RETVAL=$?
+        echo
+        ;;
+  		
+  *)
+        echo "Usage: upshatmonitor {start|stop|status|restart|reload}"
+        exit 1
+esac
+
+exit $RETVAL

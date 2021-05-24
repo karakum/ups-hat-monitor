@@ -1,0 +1,27 @@
+# Raspi UPS Monitor configuration file
+#
+# (C) 2018 Michele <o-zone@zerozone.it> Pinassi
+#     https://github.com/michelep/RaspiUpsMonitor
+# (C) 2021 Andrey Shertsinger <andrey@shertsinger.ru>
+#     https://githum.com/karakum/ups-hat-monitor
+#
+# Path search order:
+# 1) /etc/upshatmonitor.conf
+# 2) ~/.upshatmonitor.conf
+# 3) upshatmonitor.conf
+#
+# Drivers supported:
+# ina219    https://www.waveshare.com/wiki/UPS_HAT
+# max17034  https://wiki.geekworm.com/index.php/Raspi_UPS_HAT_Board
+
+[General]
+hat_driver=ina219
+i2c_bus=1
+
+[Monitor]
+# On alert level of 10%, just alert all users...
+alert_level=10
+alert_action=/usr/bin/wall "UPS Battery is dying..."
+# When battery is dying, halt the system safely
+critical_level=5
+critical_action=/sbin/halt -p

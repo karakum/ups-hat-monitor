@@ -1,0 +1,14 @@
+#copy this to /usr/lib/systemd/system/upshatmonitor.service
+#systemctl enable upshatmonitor
+#systemctl start upshatmonitor
+
+[Unit]
+Description=Monitor of UPS HAT For Raspberry Pi
+
+[Service]
+Type=forking
+PIDFile=/run/ups-hat-monitor.pid
+ExecStart=/usr/bin/ups-hat-monitor --pidfile=/run/ups-hat-monitor.pid
+
+[Install]
+WantedBy=multi-user.target

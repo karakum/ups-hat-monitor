@@ -1,0 +1,48 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          upshatmonitor
+# Required-Start:    $network $syslog
+# Required-Stop:     $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      
+# Short-Description: Monitor of UPS HAT For Raspberry Pi 
+# Description:        
+### END INIT INFO
+
+set -e
+
+executable="/usr/local/bin/ups-hat-monitor"
+PIDFILE="/var/run/ups-hat-monitor.pid"
+
+OPTIONS=""
+MODULES=""
+
+# Get lsb functions
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+    log_begin_msg "Starting UPS HAT Monitor : "
+    start-stop-daemon --start --quiet --exec "$executable" --pidfile "$PIDFILE" -- $OPTIONS
+    log_end_msg $?
+    ;;
+  stop)
+    log_begin_msg "Stopping UPS HAT Monitor: "
+    start-stop-daemon --stop --quiet --retry 2 --pidfile "$PIDFILE"
+    log_end_msg $?
+    ;;
+  restart)
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  reload|force-reload) 
+    log_begin_msg "Reloading upshatmonitor : "
+    start-stop-daemon --stop --signal HUP --pidfile "$PIDFILE"
+    log_end_msg $?
+    ;;
+  *)
+    log_success_msg "Usage: $0 {start|stop|restart|reload|force-reload}"
+    exit 1
+esac
+

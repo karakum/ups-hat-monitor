@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+# Startup script for upshatmonitor
+#
+# chkconfig: 2345 65 38
+# description: Monitor of UPS HAT For Raspberry Pi
+# processname: ups-hat-monitor
+# pidfile: /var/run/ups-hat-monitor.pid
+
+### BEGIN INIT INFO
+# Provides:          upshatmonitor
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs $syslog $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Monitor of UPS HAT For Raspberry Pi
+# Description:       
+### END INIT INFO
+
+. /etc/rc.status
+
+# Reset status of this service
+rc_reset
+
+BIN=/usr/local/bin/ups-hat-monitor
+PID=/var/run/ups-hat-monitor.pid
+
+test -x $BIN || {
+        echo "$BIN not installed";
+        if [ "$1" = "stop" ] ; then
+                exit 0
+        else
+                exit 5
+        fi
+        }
+
+case "$1" in
+        start)
+                echo -n "Starting upshatmonitor "
+                startproc $BIN
+                rc_status -v
+                ;;
+        stop)
+                echo -n "Stopping upshatmonitor "
+                killproc -TERM $BIN
+				rm -f $PID
+                rc_status -v
+                ;;
+        restart)
+                $0 stop
+                $0 start
+                rc_status
+                ;;
+        reload)
+                echo -n "Reload upshatmonitor config: "
+                killproc -HUP $BIN
+                rc_status -v
+                ;;
+        status)
+                echo -n "Checking for service upshatmonitor "
+                checkproc $BIN
+                rc_status -v
+                ;;
+        *)
+                echo "Usage: $0 {start|stop|status|restart|reload}"
+        exit 1
+        ;;
+esac
+rc_exit
