@@ -211,7 +211,7 @@ class INA219:
         if self.capacity < 0:
             self.capacity = 0
 
-        self.status = 1 if self.current >= 0 else 0
+        self.status = 1 if self.current > -100 else 0  # if discharge current < 100 mA  ONLINE (current volatile)
 
 
 if __name__ == '__main__':
